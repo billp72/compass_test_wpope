@@ -7,7 +7,7 @@ cd compass_wpope_frontend <br />
 npm.cmd run dev
 
 
-## Scoring criteria
+# Scoring criteria
 # Presumably, the goal of a home-buyer is to find the most recent listings that are closest to their budget.
 
 # Opinionated version
