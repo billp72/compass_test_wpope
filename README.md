@@ -1,16 +1,14 @@
 
-## Backend setup and run 
-The backend requires Java JDK 25 or newer. <br />
+# Backend setup and run 
 java -version (25 or higher) <br />
-cd compass_wpope_backend
-Windows: .\gradlew.bat run
+cd compass_wpope_backend <br />
+Windows: .\gradlew.bat run <br />
 MacOs: ./gradlew run
 
 # Frontend setup and run
 cd compass_wpope_frontend
 npm install
 npm.cmd run dev
-
 
 # Scoring criteria
 If the goal of a home-buyer is to find the most recent listings that are closest to their budget, the below formula would deliver the most relevant listings.
