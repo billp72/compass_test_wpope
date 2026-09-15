@@ -8,8 +8,7 @@ npm.cmd run dev
 
 
 ## Scoring criteria
-# Presumably, the goal of the user is to find the most recent listings that are closest to their budget.
-(results may vary depending on other filter selections like location)
+# Presumably, the goal of a home-buyer is to find the most recent listings that are closest to their budget.
 
 # Opinionated version
 * First, I would have the user enter a budget.
@@ -21,3 +20,5 @@ So even if a listing is recent, it might score low.
 So not to presume too much, I would probably allow the user to determine which is more important - the age of the listing or their budget.
 If budget is the priority, the user could elect to score based on budget.
 If age is the priority, we would score listings by age (similar to the above)
+
+(results may vary depending on filter selections like location)
