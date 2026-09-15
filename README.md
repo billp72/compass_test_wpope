@@ -1,8 +1,14 @@
-# run server
-cd compass_wpope_backend <br />
-.\gradlew.bat run
 
-# run client
+# Backend setup and run
+The backend requires Java JDK 25 or newer. <br />
+Verify that Java is installed:<br />
+```bash <br />
+java -version <br />
+cd compass_wpope_backend <br />
+Windows: .\gradlew.bat run
+MacOs: ./gradlew run
+
+# Frontend setup and run
 cd compass_wpope_frontend <br />
 npm install <br />
 npm.cmd run dev
