@@ -11,7 +11,7 @@ npm install <br />
 npm.cmd run dev
 
 # Scoring criteria
-If the goal of a home-buyer is to find the most recent listings that are closest to their budget, the below formula would deliver the most relevant listings.
+If the goal of a home-buyer is to find the most recent listings that are closest to their budget, the below method would deliver the most relevant listings.
 
 # Opinionated version
 * First, create an input field called Budget.
