@@ -1,9 +1,7 @@
 
-Backend setup and run <br />
-The backend requires Java JDK 25 or newer.
-Verify that Java is installed:
-```bash 
-java -version (25 or higher)
+## Backend setup and run 
+The backend requires Java JDK 25 or newer. <br />
+java -version (25 or higher) <br />
 cd compass_wpope_backend
 Windows: .\gradlew.bat run
 MacOs: ./gradlew run
