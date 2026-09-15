@@ -1,9 +1,9 @@
 # run server
-cd compass_wpope_backend
+cd compass_wpope_backend n\
 .\gradlew.bat run
 
 # run client
-cd compass_wpope_frontend
+cd compass_wpope_frontend n\
 npm.cmd run dev
 
 
