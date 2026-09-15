@@ -6,8 +6,8 @@ Windows: .\gradlew.bat run <br />
 MacOs: ./gradlew run
 
 # Frontend setup and run
-cd compass_wpope_frontend
-npm install
+cd compass_wpope_frontend <br />
+npm install <br />
 npm.cmd run dev
 
 # Scoring criteria
