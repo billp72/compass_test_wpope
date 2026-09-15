@@ -1,5 +1,5 @@
 
-Backend setup and run
+Backend setup and run <br />
 The backend requires Java JDK 25 or newer.
 Verify that Java is installed:
 ```bash 
