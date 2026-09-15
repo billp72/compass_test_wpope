@@ -4,6 +4,7 @@ cd compass_wpope_backend <br />
 
 # run client
 cd compass_wpope_frontend <br />
+npm install <br />
 npm.cmd run dev
 
 
