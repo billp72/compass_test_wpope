@@ -47,7 +47,8 @@ function App() {
   const [pagination, setPagination] = useState({
     page: 1,
     pageSize: 3,
-    totalPages: 1,
+    totalPages: 0,
+    totalResults: 0,
   });
   const [filteredListings, setFilteredListings] = useState([]);
 
@@ -61,6 +62,7 @@ function App() {
   }
 
   useEffect(() => {
+    console.log("Filters changed:", filters);
     const params = new URLSearchParams();
 
     // Add keyword search when present.
@@ -129,13 +131,14 @@ function App() {
       })
       .then((data) => {
         setFilteredListings(data.results);
+        //console.log(data.pagination)
         setPagination(data.pagination);
       })
       .catch((error) => {
         console.error("Error fetching listings:", error);
       });
 
-  }, [filters, pagination])
+  }, [filters, pagination.page])
 
   function toBackendOperator(operator) {
     switch (operator) {
@@ -270,11 +273,13 @@ function App() {
         </table>
       </section>
 
-      <div className="ticks">
-        {Array.from({ length: pagination.totalPages }, (_, index) => (
-          pagination.totalPages == 3 ? (
-            <button onClick={() => setPagination({ ...pagination, page: index + 1 })} key={index} className="tick">{index + 1}</button>
-          ) : <div className="tick">...</div>
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "10px" }}>
+        {Array.from({ length: pagination.totalResults }, (_, index) => (
+          index < 3 ? (
+            <div><button onClick={() => setPagination({ ...pagination, page: index + 1 })} key={index} className="tick">{index + 1}</button></div>
+          ) : index == pagination.totalResults - 1 && (
+            <div style={{ padding: "5px" }}>...</div>
+          ) 
         ))}
       </div>
       <section id="spacer"></section>

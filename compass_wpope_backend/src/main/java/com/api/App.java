@@ -29,6 +29,7 @@ public class App {
     }
 
     record Pagination(
+            int totalResults,
             int totalPages,
             int page,
             int pageSize) {
@@ -102,7 +103,7 @@ public class App {
 
         return new CombinedResults(
             paginatedResults,
-            new Pagination(totalPages, page, pageSize));
+            new Pagination(totalResults, totalPages, page, pageSize));
     }
 
     private static Filter[] loadFilters(Context ctx) {
