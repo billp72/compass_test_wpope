@@ -276,7 +276,7 @@ function App() {
       <div style={{ display: "flex", justifyContent: "center", marginTop: "10px" }}>
         {Array.from({ length: pagination.totalResults }, (_, index) => (
           index < 3 ? (
-            <div><button onClick={() => setPagination({ ...pagination, page: index + 1 })} key={index} className="tick">{index + 1}</button></div>
+            <div><button style={{backgroundColor: index === pagination.page - 1 ? "lightgray" : "white"}} onClick={() => setPagination({ ...pagination, page: index + 1 })} key={index} className="tick">{index + 1}</button></div>
           ) : index == pagination.totalResults - 1 && (
             <div style={{ padding: "5px" }}>...</div>
           ) 
