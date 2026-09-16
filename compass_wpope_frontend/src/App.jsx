@@ -44,6 +44,11 @@ const initialFilters = {
 
 function App() {
   const [filters, setFilters] = useState(initialFilters);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    pageSize: 3,
+    totalPages: 1,
+  });
   const [filteredListings, setFilteredListings] = useState([]);
 
   function updateFilter(event) {
@@ -59,7 +64,7 @@ function App() {
     const params = new URLSearchParams();
 
     // Add keyword search when present.
-    if (filters.keyword?.trim()) {
+    if (filters.keyword?.trim() && filters.keyword?.trim().length > 2) {
       params.set("keyword", filters.keyword.trim());
     }
 
@@ -113,7 +118,8 @@ function App() {
         `bedrooms:${toBackendOperator(filters.bedroomsOperator)}:${filters.bedrooms}`
       );
     }
-    fetch(`/api/listings?${params.toString()}`)
+
+    fetch(`/api/listings?${params.toString()}&page=${pagination.page}&pageSize=${pagination.pageSize}&totalPages=${pagination.totalPages}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
@@ -122,12 +128,14 @@ function App() {
         return response.json();
       })
       .then((data) => {
-        setFilteredListings(data);
+        setFilteredListings(data.results);
+        setPagination(data.pagination);
       })
       .catch((error) => {
         console.error("Error fetching listings:", error);
       });
-  }, [filters])
+
+  }, [filters, pagination])
 
   function toBackendOperator(operator) {
     switch (operator) {
@@ -262,7 +270,13 @@ function App() {
         </table>
       </section>
 
-      <div className="ticks">pagination (to be implemented)</div>
+      <div className="ticks">
+        {Array.from({ length: pagination.totalPages }, (_, index) => (
+          pagination.totalPages == 3 ? (
+            <button onClick={() => setPagination({ ...pagination, page: index + 1 })} key={index} className="tick">{index + 1}</button>
+          ) : <div className="tick">...</div>
+        ))}
+      </div>
       <section id="spacer"></section>
     </>
   )

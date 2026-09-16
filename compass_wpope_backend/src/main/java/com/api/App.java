@@ -28,6 +28,18 @@ public class App {
             Object value) {
     }
 
+    record Pagination(
+            int totalPages,
+            int page,
+            int pageSize) {
+    }
+
+    record CombinedResults(
+            ArrayNode results,
+            Pagination pagination) {}
+    
+
+
     public static void main(String[] args) {
         JsonNode listings = loadListings();
 
@@ -43,6 +55,9 @@ public class App {
 
         app.get("/api/listings", ctx -> {
             String keyword = ctx.queryParam("keyword");
+            int pageParam = Integer.parseInt(ctx.queryParam("page"));
+            int pageSizeParam = Integer.parseInt(ctx.queryParam("pageSize"));
+
             Filter[] filters;
 
             try {
@@ -53,7 +68,7 @@ public class App {
             }
 
             if (keyword == null || keyword.isBlank()) {
-                ctx.json(filterListings(listings, filters));
+                ctx.json(paginateResults(filterListings(listings, filters), pageParam, pageSizeParam));
                 return;
             }
 
@@ -63,10 +78,31 @@ public class App {
                 return;
             }
 
-            ctx.json(searchListings(listings, keyword));
+            ctx.json(paginateResults(searchListings(listings, keyword), pageParam, pageSizeParam));
         });
 
         app.start(7070);
+    }
+
+    private static CombinedResults paginateResults(ArrayNode results, int page, int pageSize) {
+        int totalResults = results.size();
+        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
+
+        if (page < 1 || page > totalResults) {
+            throw new IllegalArgumentException("Page number out of range");
+        }
+
+        int fromIndex = (page - 1) * pageSize;
+        int toIndex = Math.min(fromIndex + pageSize, totalResults);
+
+        ArrayNode paginatedResults = results.arrayNode();
+        for (int i = fromIndex; i < toIndex; i++) {
+            paginatedResults.add(results.get(i));
+        }
+
+        return new CombinedResults(
+            paginatedResults,
+            new Pagination(totalPages, page, pageSize));
     }
 
     private static Filter[] loadFilters(Context ctx) {
