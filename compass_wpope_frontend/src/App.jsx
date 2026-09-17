@@ -28,6 +28,36 @@ function FilterControls({
   );
 }
 
+function PaginationControls({ pagination, index, setPagination }) {
+  const { page, totalPages } = pagination;  
+  if(index < 5) {
+    return (
+      <div>
+        <button 
+          style={{backgroundColor: index === page - 1 ? "lightgray" : "white"}} 
+          onClick={() => setPagination({ ...pagination, page: index + 1 })} 
+          key={index} className="tick">{index + 1}
+        </button>
+      </div>)
+  }
+
+  if(index >= 5 && index < totalPages - 5) {
+    if(index === 5) {
+      return <div style={{ padding: "5px" }}>...</div>
+    }
+  }else{
+    return (
+      <div>
+        <button 
+          style={{backgroundColor: index === page - 1 ? "lightgray" : "white"}} 
+          onClick={() => setPagination({ ...pagination, page: index + 1 })} 
+          key={index} className="tick">{index + 1}
+        </button>
+      </div>)
+  }
+}
+  
+
 const initialFilters = {
   keyword: "",
   address: "",
@@ -274,15 +304,10 @@ function App() {
       </section>
 
       <div style={{ display: "flex", justifyContent: "center", marginTop: "10px" }}>
-        {Array.from({ length: pagination.totalResults }, (_, index) => (
-          index < 3 ? (
-            <div><button style={{backgroundColor: index === pagination.page - 1 ? "lightgray" : "white"}} onClick={() => setPagination({ ...pagination, page: index + 1 })} key={index} className="tick">{index + 1}</button></div>
-          ) : index == pagination.totalResults - 1 && (
-            <div style={{ padding: "5px" }}>...</div>
-          ) 
+        {Array.from({ length: pagination.totalPages }, (_, index) => (
+          <PaginationControls pagination={pagination} index={index} setPagination={setPagination} key={index} />
         ))}
       </div>
-      <section id="spacer"></section>
     </>
   )
 }

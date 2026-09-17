@@ -89,7 +89,7 @@ public class App {
         int totalResults = results.size();
         int totalPages = (int) Math.ceil((double) totalResults / pageSize);
 
-        if (page < 1 || page > totalResults) {
+        if (page < 1 || page > totalPages) {
             throw new IllegalArgumentException("Page number out of range");
         }
 
