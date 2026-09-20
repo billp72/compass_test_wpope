@@ -44,7 +44,7 @@ Future<Response> future = executor.submit(() ->
     httpClient.send(request, HttpResponse.BodyHandlers.ofString())
 );
 
-// When query changes, cancel the old future. This will start a new query and prevent stale queries from giving false results
+When query changes, cancel the old future. This will start a new query and prevent stale queries from giving false results<br />
 future.cancel(true);
 
 # problem of duplicate listings
