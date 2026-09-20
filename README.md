@@ -46,3 +46,18 @@ Future<Response> future = executor.submit(() ->
 
 // When query changes, cancel the old future. This will start a new query and prevent stale queries from giving false results
 future.cancel(true);
+
+# problem of duplicate listings
+this is a throny issue that I tried to solve with the least amount of overhead
+* I created a method called Dedupe
+* I passed the paginated data, the master data list, and the page size to it
+* I normalized the address and removed all punctuation and things like: apartment, apt, ste, suite, etc
+* I created a hash table, using the normilized addresses as keys, and checked for their existance
+* If a dup existed, I exclude it from the subset
+* I then use the master list to backfill (checking for dups there too) the missing listings based on the pageSize
+* I returned the deduped list
+
+Problems: If a listing on one page is a duplicate on the next, it will not remove it because the memory is wiped between page requests<br />
+Possible solution: store duplicates in a database and check for them there, key 410pinestr10b|90210
+
+the overhead would be tiny because I'm only brute-forcing (O(1)) paginated data which could be no more than 50 rows

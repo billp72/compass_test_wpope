@@ -6,13 +6,13 @@ import io.javalin.http.Context;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-
+import java.util.Locale;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
+import java.util.Set;
 
 public class App {
 
@@ -37,9 +37,20 @@ public class App {
 
     record CombinedResults(
             ArrayNode results,
-            Pagination pagination) {}
-    
+            Pagination pagination) {
+    }
 
+    record Dedupe(
+            ArrayNode listings,
+            int count) {
+    }
+
+    private static String normalizeAddress(String address) {
+        return address
+                .toLowerCase(Locale.ROOT)
+                .replaceAll("\\b(?:apt|apartment|appartment|unit|suite|ste)\\b", "")
+                .replaceAll("[^\\p{L}\\p{N}]", "");
+    }
 
     public static void main(String[] args) {
         JsonNode listings = loadListings();
@@ -85,6 +96,37 @@ public class App {
         app.start(7070);
     }
 
+    private static Dedupe dedupeListings(JsonNode listings, JsonNode originalListings, int pageSize) {
+        ArrayNode finalResults = new ObjectMapper().createArrayNode();
+        Set<String> seenAddresses = new HashSet<>();
+        Set<String> seenZipcodes = new HashSet<>();
+
+        for (JsonNode listing : listings) {
+            String normalizedAddress = normalizeAddress(listing.path("address").asText());
+            String zipcode = listing.path("zipcode").asText();
+
+            if (!seenAddresses.add(normalizedAddress) && !seenZipcodes.add(zipcode)) {
+                finalResults.add(listing);
+            }
+        }
+        for (JsonNode listing : originalListings) {
+            if (finalResults.size() >= pageSize) {
+                break;
+            }
+
+            String address = normalizeAddress(
+                    listing.path("address").asText());
+
+            String zipcode = listing.path("zipcode").asText();
+
+            if (!seenAddresses.add(address) && !seenZipcodes.add(zipcode)) {
+                finalResults.add(listing);
+            }
+        }
+
+        return new Dedupe(finalResults, finalResults.size());
+    }
+
     private static CombinedResults paginateResults(ArrayNode results, int page, int pageSize) {
         int totalResults = results.size();
         int totalPages = (int) Math.ceil((double) totalResults / pageSize);
@@ -101,9 +143,11 @@ public class App {
             paginatedResults.add(results.get(i));
         }
 
+        ArrayNode dedupedResults = dedupeListings(paginatedResults, results, pageSize).listings();
+
         return new CombinedResults(
-            paginatedResults,
-            new Pagination(totalResults, totalPages, page, pageSize));
+                dedupedResults,
+                new Pagination(totalResults, totalPages, page, pageSize));
     }
 
     private static Filter[] loadFilters(Context ctx) {
