@@ -62,6 +62,7 @@ const initialFilters = {
   keyword: "",
   address: "",
   city: "",
+  zip: "",
   state: "",
   priceOperator: "equals",
   price: "",
@@ -112,6 +113,13 @@ function App() {
       params.append(
         "filter",
         `address:EQUALS:${filters.address.trim()}`
+      );
+    }
+
+    if (filters.zip?.trim()) {
+      params.append(
+        "filter",
+        `zip:EQUALS:${filters.zip.trim()}`
       );
     }
 
@@ -229,6 +237,16 @@ function App() {
               </th>
 
               <th>
+                Zip Code
+                <input
+                  name="zip"
+                  value={filters.zip}
+                  onChange={updateFilter}
+                  placeholder="Search zip code"
+                />
+              </th>
+
+              <th>
                 State
                 <input
                   name="state"
@@ -286,6 +304,7 @@ function App() {
               <tr key={listing.id}>
                 <td>{listing.address}</td>
                 <td>{listing.city}</td>
+                <td>{listing.zip}</td>
                 <td>{listing.state}</td>
                 <td>{listing.price.toLocaleString()}</td>
                 <td>{listing.bedrooms}</td>

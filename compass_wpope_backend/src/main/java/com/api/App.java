@@ -13,6 +13,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+//import java.util.stream.Collectors;
 
 public class App {
 
@@ -45,9 +48,26 @@ public class App {
             int count) {
     }
 
+    private static final Map<String, String> ADDRESS_ABBREVIATIONS = Map.of(
+            "st", "street",
+            "str", "street",
+            "rd", "road",
+            "ave", "avenue",
+            "blvd", "boulevard",
+            "dr", "drive",
+            "ln", "lane",
+            "ct", "court");
+
     private static String normalizeAddress(String address) {
-        return address
-                .toLowerCase(Locale.ROOT)
+        String normalized = address.toLowerCase(Locale.ROOT);
+
+        for (Map.Entry<String, String> entry : ADDRESS_ABBREVIATIONS.entrySet()) {
+            normalized = normalized.replaceAll(
+                    "\\b" + Pattern.quote(entry.getKey()) + "\\b",
+                    Matcher.quoteReplacement(entry.getValue()));
+        }
+
+        return normalized
                 .replaceAll("\\b(?:apt|apartment|appartment|unit|suite|ste)\\b", "")
                 .replaceAll("[^\\p{L}\\p{N}]", "");
     }
@@ -96,31 +116,43 @@ public class App {
         app.start(7070);
     }
 
-    private static Dedupe dedupeListings(JsonNode listings, JsonNode originalListings, int pageSize) {
+    private static Dedupe dedupeListings(
+            JsonNode listings,
+            JsonNode originalListings,
+            int pageSize) {
+
         ArrayNode finalResults = new ObjectMapper().createArrayNode();
-        Set<String> seenAddresses = new HashSet<>();
-        Set<String> seenZipcodes = new HashSet<>();
+        Set<String> seenListings = new HashSet<>();
 
         for (JsonNode listing : listings) {
-            String normalizedAddress = normalizeAddress(listing.path("address").asText());
-            String zipcode = listing.path("zipcode").asText();
+            String address = normalizeAddress(
+                    listing.path("address").asText());
+            String zipcode = listing.path("zip").asText();
 
-            if (!seenAddresses.add(normalizedAddress) && !seenZipcodes.add(zipcode)) {
+            String key = address + "|" + zipcode;
+
+            if (seenListings.add(key)) {
                 finalResults.add(listing);
             }
         }
-        for (JsonNode listing : originalListings) {
-            if (finalResults.size() >= pageSize) {
-                break;
-            }
 
-            String address = normalizeAddress(
-                    listing.path("address").asText());
+        if (finalResults.size() < pageSize) {
+            for (JsonNode listing : originalListings) {
+                if (finalResults.size() >= pageSize) {
+                    break;
+                }
+                String address = normalizeAddress(
+                        listing.path("address").asText());
+                String zipcode = listing.path("zip").asText();
 
-            String zipcode = listing.path("zipcode").asText();
+                String key = address + "|" + zipcode;
 
-            if (!seenAddresses.add(address) && !seenZipcodes.add(zipcode)) {
-                finalResults.add(listing);
+                if (seenListings.add(key)) {
+                    System.out.printf(
+                        "normal=[%s]%n",
+                        key);
+                    finalResults.add(listing);
+                }
             }
         }
 
