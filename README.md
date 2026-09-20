@@ -60,4 +60,4 @@ this is a throny issue that I tried to solve with the least amount of overhead
 Problems: If a listing on one page is a duplicate on the next, it will not remove it because the memory is wiped between page requests<br />
 Possible solution: store duplicates in a database and check for them there, key 410pinestr10b|90210
 
-the overhead would be tiny because I'm only brute-forcing (O(1)) paginated data which could be no more than 50 rows
+the overhead would be tiny because I'm only brute-forcing (O(N)) paginated data which could be no more than 50 rows
