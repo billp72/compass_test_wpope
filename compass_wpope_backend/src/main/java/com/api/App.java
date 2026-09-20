@@ -148,9 +148,6 @@ public class App {
                 String key = address + "|" + zipcode;
 
                 if (seenListings.add(key)) {
-                    System.out.printf(
-                        "normal=[%s]%n",
-                        key);
                     finalResults.add(listing);
                 }
             }
