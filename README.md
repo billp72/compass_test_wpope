@@ -64,6 +64,3 @@ Then paginate that cached list. Be sure to invalidate it when the underlying dat
 * create a duplicate database that stores the dupkey, position, and searchID
 The database should store the deduplication state and ordered search snapshot.
 
-
-the overhead would be tiny because I'm only brute-forcing (O(N)) paginated data which could be no more than 50 rows<br />
-Using things like RTK (Redux Toolkit) we could further redice the burden on the app as it automatically caches the responses
