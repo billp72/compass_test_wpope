@@ -27,16 +27,6 @@ If age is the priority, we would score listings by age (similar to the above)
 
 (results may vary depending on filter selections like location)
 
-# Dedup question.
-During the interview, the interviewer asked me how I would prevent duplicate adresses and with different abbreviations etc 
-
-On the train home, I thought about it.
-
-* I think normalization when the data is entered would remove different abbreviations (e.g., ave vs. avenue)
-* Once the data is normalized, you could use a lookup table to remove duplicates when the data is fetched
-* Perhaps the best way is to normalize the addresses when they're input and, at 2AM on Saturday, run a batch process and do the checking then.
-* if the data is scraped, simply run a batch process on the scrapped data or after it's entered at 2AM
-
 # out-of-order search keyword network request
 
 ExecutorService executor = Executors.newSingleThreadExecutor();
